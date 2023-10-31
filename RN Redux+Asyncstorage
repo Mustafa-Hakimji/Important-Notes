@@ -1,0 +1,55 @@
+Redux With Async storage in react native implementation:-
+----------------------------------------------------------------------------------------
+Store.js file setup
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {combineReducers, configureStore} from '@reduxjs/toolkit';
+import DistanceSlice from './Slice';
+import {persistReducer, persistStore} from 'redux-persist';
+
+const rootReducer = combineReducers({
+  DistanceSlice,
+});
+
+const persistConfig = {
+  storage: AsyncStorage,
+  key: 'distance',
+};
+
+const persistReducers = persistReducer(persistConfig, rootReducer);
+
+const store = configureStore({
+  reducer: persistReducers,
+});
+
+export default store;
+----------------------------------------------------------------------------------------
+App.js file implementation
+
+import {StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import Navigation from './src/Navigators/Stacknavigation';
+import 'react-native-gesture-handler';
+import 'react-native-svg';
+import 'react-native-redash';
+import Testing from './src/Components/Testing';
+import store from './src/Redux/Store';
+import persistStore from 'redux-persist/es/persistStore';
+import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
+
+const App = () => {
+  const persistor = persistStore(store);
+  return (
+    <>
+      <Provider store={store}>
+        <PersistGate persistor={persistor}>
+          <Navigation />
+        </PersistGate>
+      </Provider>
+    </>
+  );
+};
+
+export default App;
+----------------------------------------------------------------------------------------
